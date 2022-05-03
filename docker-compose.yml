@@ -1,0 +1,33 @@
+version: '3'
+
+networks:
+  laravel:
+
+
+services:
+  nginx:
+    image: nginx:stable-alpine
+    container_name: nginx
+    restart: unless-stopped
+    ports:
+      - "8088:80"
+    volumes:
+      - ./src:/var/www/html
+      - ./nginx:/etc/nginx/conf.d
+    depends_on:
+      - app
+    networks:
+      - laravel
+
+  app:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: app
+    volumes:
+      - ./src:/var/www/html
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+    networks:
+        - laravel
